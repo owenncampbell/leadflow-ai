@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayMessage('Analyzing lead...', 'info'); // 'info' styling needs to be added to CSS
 
         try {
-            const response = await fetch('/api/analyze-lead', {
+            const response = await fetch('https://leadflow-ai-backend-1e2b.onrender.com/api/analyze-lead', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

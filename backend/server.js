@@ -1,10 +1,17 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors'); // Import cors
 const OpenAI = require('openai'); // Import OpenAI library
 require('dotenv').config({ path: path.resolve(__dirname, './.env') }); // Load environment variables
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Configure CORS to allow requests from your frontend
+const corsOptions = {
+    origin: 'https://shiftloopleads.netlify.app',
+};
+app.use(cors(corsOptions));
 
 // Initialize OpenAI
 const openai = new OpenAI({
