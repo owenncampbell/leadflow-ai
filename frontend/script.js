@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="lead-actions">
                     <button class="send-email">Send Email</button>
                     <button class="edit-email">Edit Email</button>
+                    <button class="delete-lead">Delete</button>
                 </div>
             </div>
         `;
@@ -93,6 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const newStatus = e.target.value;
             const leadId = e.target.dataset.leadId;
             await updateLeadStatus(leadId, newStatus, leadItem);
+        });
+
+        // Delete Lead
+        const deleteButton = leadItem.querySelector('.delete-lead');
+        deleteButton.addEventListener('click', async () => {
+            if (confirm(`Are you sure you want to delete the lead for ${lead.clientName}?`)) {
+                await deleteLead(lead._id, leadItem);
+            }
         });
 
         // Edit/Save Email
@@ -138,6 +147,29 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error updating status:', error);
             // Optionally revert UI change or show error to user
+        }
+    }
+
+    async function deleteLead(leadId, leadItem) {
+        try {
+            const response = await fetch(`${API_URL}/leads/${leadId}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) throw new Error('Failed to delete lead.');
+            
+            // Remove lead from UI
+            leadItem.style.transition = 'opacity 0.5s ease';
+            leadItem.style.opacity = '0';
+            setTimeout(() => {
+                leadItem.remove();
+                if (leadsList.children.length === 0) {
+                    leadsList.innerHTML = '<p>No leads yet. Submit one using the form!</p>';
+                }
+            }, 500);
+
+        } catch (error) {
+            console.error('Error deleting lead:', error);
+            alert('Error: Could not delete lead.');
         }
     }
 

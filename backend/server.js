@@ -138,6 +138,22 @@ app.put('/api/leads/:id/status', async (req, res) => {
     }
 });
 
+// Delete a lead
+app.delete('/api/leads/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedLead = await Lead.findByIdAndDelete(id);
+
+        if (!deletedLead) {
+            return res.status(404).json({ error: 'Lead not found.' });
+        }
+        res.status(200).json({ message: 'Lead deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting lead:', error);
+        res.status(500).json({ error: 'Failed to delete lead.' });
+    }
+});
+
 
 // This middleware should be the last one.
 // It catches all other routes and sends the index.html file.
