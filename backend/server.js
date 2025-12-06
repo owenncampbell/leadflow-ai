@@ -60,31 +60,54 @@ app.post('/api/analyze-lead', async (req, res) => {
     if (!projectDescription || !clientName || !clientEmail) {
         return res.status(400).json({ error: 'Missing required lead information.' });
     }
-    
-    // AI Analysis Logic...
-    const prompt = `You are an AI assistant for a contracting business...`; // Keeping prompt brief for this example
+
+    // A more detailed and explicit prompt for the AI
+    const prompt = `You are an AI assistant for a contracting business. Analyze the project description below.
+
+Project Description: "${projectDescription}"
+
+Provide your response in a valid JSON format with the following keys:
+- "summary": A concise summary of the project.
+- "category": A category for the project (e.g., "Kitchen Remodel", "Deck Construction", "Fencing").
+- "costEstimate": A rough, non-binding, ballpark cost estimate as a string (e.g., "$5,000 - $8,000").
+- "materialList": An array of strings, listing potential materials. This MUST be an array of strings.
+- "laborBreakdown": An array of strings, listing the major labor tasks. This MUST be an array of strings.
+- "permitRequired": A string: "Yes", "No", or "Possibly".
+- "draftEmail": A polite, professional email to the client named "${clientName}", confirming the project details and asking clarifying questions. Sign off as "LeadFlow AI Team".`;
+
     try {
         const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
         const chatCompletion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: `Analyze: "${projectDescription}" and provide JSON with keys: summary, category, costEstimate, materialList, laborBreakdown, permitRequired, draftEmail.` }],
+            messages: [{ role: "user", content: prompt }],
             response_format: { type: "json_object" },
         });
 
         const aiOutput = JSON.parse(chatCompletion.choices[0].message.content);
 
-        // Create a new lead document
+        // --- Data Sanitization ---
+        // Ensure materialList is an array of strings
+        const sanitizedMaterials = Array.isArray(aiOutput.materialList) 
+            ? aiOutput.materialList.filter(item => typeof item === 'string') 
+            : [];
+
+        // Ensure laborBreakdown is an array of strings
+        const sanitizedLabor = Array.isArray(aiOutput.laborBreakdown)
+            ? aiOutput.laborBreakdown.filter(item => typeof item === 'string')
+            : [];
+
+        // Create a new lead document with sanitized data
         const newLead = new Lead({
             projectDescription,
             clientName,
             clientEmail,
-            aiSummary: aiOutput.summary,
-            aiCategory: aiOutput.category,
-            aiCostEstimate: aiOutput.costEstimate,
-            aiMaterialList: aiOutput.materialList,
-            aiLaborBreakdown: aiOutput.laborBreakdown,
-            aiPermitRequired: aiOutput.permitRequired,
-            aiDraftEmail: aiOutput.draftEmail,
+            aiSummary: aiOutput.summary || 'N/A',
+            aiCategory: aiOutput.category || 'N/A',
+            aiCostEstimate: aiOutput.costEstimate || 'N/A',
+            aiMaterialList: sanitizedMaterials,
+            aiLaborBreakdown: sanitizedLabor,
+            aiPermitRequired: aiOutput.permitRequired || 'N/A',
+            aiDraftEmail: aiOutput.draftEmail || 'Could not generate email.',
         });
 
         // Save the lead to the database
