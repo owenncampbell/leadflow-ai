@@ -107,13 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Edit/Save Email
         const editEmailButton = leadItem.querySelector('.edit-email');
         const emailPre = leadItem.querySelector('pre');
-        editEmailButton.addEventListener('click', () => {
+        editEmailButton.addEventListener('click', async () => {
             const isEditing = emailPre.isContentEditable;
             if (isEditing) {
+                const newEmail = emailPre.textContent;
+                await updateLeadEmail(lead._id, newEmail); // Save the email
                 emailPre.contentEditable = false;
                 editEmailButton.textContent = 'Edit Email';
                 emailPre.classList.remove('is-editing');
-                // Future: save updated email to backend
             } else {
                 emailPre.contentEditable = true;
                 editEmailButton.textContent = 'Save Email';
@@ -170,6 +171,21 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error deleting lead:', error);
             alert('Error: Could not delete lead.');
+        }
+    }
+
+    async function updateLeadEmail(leadId, email) {
+        try {
+            const response = await fetch(`${API_URL}/leads/${leadId}/email`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+            if (!response.ok) throw new Error('Failed to save email.');
+            alert('Email draft saved!');
+        } catch (error) {
+            console.error('Error saving email:', error);
+            alert('Error: Could not save email draft.');
         }
     }
 

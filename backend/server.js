@@ -154,6 +154,24 @@ app.delete('/api/leads/:id', async (req, res) => {
     }
 });
 
+// Update a lead's email
+app.put('/api/leads/:id/email', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const { id } = req.params;
+
+        const updatedLead = await Lead.findByIdAndUpdate(id, { aiDraftEmail: email }, { new: true });
+
+        if (!updatedLead) {
+            return res.status(404).json({ error: 'Lead not found.' });
+        }
+        res.json(updatedLead);
+    } catch (error) {
+        console.error('Error updating lead email:', error);
+        res.status(500).json({ error: 'Failed to update lead email.' });
+    }
+});
+
 
 // This middleware should be the last one.
 // It catches all other routes and sends the index.html file.
