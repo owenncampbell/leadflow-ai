@@ -179,17 +179,17 @@ form button:hover {
 }
 
 .lead-details {
-    padding-top: 1.5rem;
     display: grid;
     gap: 1rem;
-    transition: grid-template-rows 0.3s ease-in-out;
-    grid-template-rows: 1fr;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, padding-top 0.5s ease-out;
+    max-height: 1500px; /* Large enough to fit content */
+    padding-top: 1.5rem;
 }
 
 .lead-item.collapsed .lead-details {
-    grid-template-rows: 0fr;
+    max-height: 0;
     padding-top: 0;
-    overflow: hidden;
 }
 
 .lead-item.collapsed .toggle-details-btn svg {
