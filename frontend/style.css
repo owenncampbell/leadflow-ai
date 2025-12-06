@@ -249,6 +249,14 @@ form button:hover {
     transition: background-color 0.2s ease;
 }
 
+.lead-actions button.generate-proposal {
+    background-color: var(--primary-color);
+    color: white;
+}
+.lead-actions button.generate-proposal:hover {
+    background-color: var(--primary-hover);
+}
+
 .lead-actions button.send-email {
     background-color: var(--secondary-color);
     color: white;

@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p><strong>AI Draft Email:</strong></p>
                 <pre>${lead.aiDraftEmail || 'N/A'}</pre>
                 <div class="lead-actions">
+                    <button class="generate-proposal">Generate Proposal</button>
                     <button class="send-email">Send Email</button>
                     <button class="edit-email">Edit Email</button>
                     <button class="delete-lead">Delete</button>
@@ -127,9 +128,41 @@ document.addEventListener('DOMContentLoaded', () => {
         leadItem.querySelector('.send-email').addEventListener('click', () => {
             alert(`Simulating sending email to ${lead.clientName}.`);
         });
+
+        // Generate Proposal
+        const proposalButton = leadItem.querySelector('.generate-proposal');
+        proposalButton.addEventListener('click', async () => {
+            proposalButton.textContent = 'Generating...';
+            proposalButton.disabled = true;
+            await generateProposal(lead._id, lead.clientName);
+            proposalButton.textContent = 'Generate Proposal';
+            proposalButton.disabled = false;
+        });
     }
 
     // --- API Interactions ---
+
+    async function generateProposal(leadId, clientName) {
+        try {
+            const response = await fetch(`${API_URL}/leads/${leadId}/proposal`);
+            if (!response.ok) throw new Error('Could not generate proposal.');
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `Proposal - ${clientName}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+
+        } catch (error) {
+            console.error('Error generating proposal:', error);
+            alert('Error: Could not generate proposal.');
+        }
+    }
 
     async function updateLeadStatus(leadId, status, leadItem) {
         try {
