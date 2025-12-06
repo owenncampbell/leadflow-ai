@@ -101,6 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="edit-email" data-lead-id="${lead.id}">Edit Email</button>
             </div>
         `;
+        leadsList.prepend(leadItem); // Add the new lead to the top of the list
+
         const statusSelect = leadItem.querySelector('.lead-status-changer select');
         statusSelect.disabled = false; // Enable the dropdown
 
