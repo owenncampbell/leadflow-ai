@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadFlow AI - Contractor Lead Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>LeadFlow AI</h1>
+        <p>AI-powered lead management for contracting businesses.</p>
+    </header>
+
+    <main>
+        <section id="lead-input">
+            <h2>Submit a New Lead</h2>
+            <form id="lead-form">
+                <label for="project-description">Project Description:</label>
+                <textarea id="project-description" placeholder="e.g., 'Need a 10x12 deck built with composite materials and a single staircase.'"></textarea>
+                <label for="client-name">Client Name:</label>
+                <input type="text" id="client-name" placeholder="John Doe">
+                <label for="client-email">Client Email:</label>
+                <input type="email" id="client-email" placeholder="john.doe@example.com">
+                <button type="submit">Analyze Lead</button>
+            </form>
+            <div id="form-messages"></div>
+        </section>
+
+        <section id="leads-dashboard">
+            <h2>Your Leads</h2>
+            <div id="leads-list">
+                <!-- Leads will be dynamically loaded here -->
+                <p>No leads yet. Submit one using the form above!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 LeadFlow AI</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
