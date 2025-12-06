@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addLeadToDashboard(lead) {
+        console.log('Received lead data:', lead); // Log the received data
         // Remove initial "No leads yet" message if present
         if (leadsList.querySelector('p')) {
             leadsList.innerHTML = '';
