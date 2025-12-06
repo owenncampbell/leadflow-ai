@@ -78,6 +78,19 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Original Request:</strong> ${lead.projectDescription}</p>
             <p><strong>AI Summary:</strong> ${lead.aiSummary}</p>
             <p><strong>AI Cost Estimate:</strong> ${lead.aiCostEstimate}</p>
+            <div>
+                <strong>Potential Materials:</strong>
+                <ul>
+                    ${lead.aiMaterialList.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+            <div>
+                <strong>Labor Breakdown:</strong>
+                <ul>
+                    ${lead.aiLaborBreakdown.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+            <p><strong>Permit Required:</strong> ${lead.aiPermitRequired}</p>
             <p><strong>AI Draft Email:</strong></p>
             <pre>${lead.aiDraftEmail}</pre>
             <div class="lead-actions">
@@ -85,7 +98,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="edit-email" data-lead-id="${lead.id}">Edit Email</button>
             </div>
         `;
-        leadsList.prepend(leadItem); // Add new leads to the top
+        const statusSelect = leadItem.querySelector('.lead-status-changer select');
+        statusSelect.disabled = false; // Enable the dropdown
+
+        statusSelect.addEventListener('change', (e) => {
+            const newStatus = e.target.value;
+            const leadStatusSpan = leadItem.querySelector('.lead-status');
+            
+            // Update the status text and class
+            leadStatusSpan.textContent = newStatus;
+            leadStatusSpan.className = `lead-status status-${newStatus.toLowerCase()}`;
+        });
 
         const editEmailButton = leadItem.querySelector('.edit-email');
         const emailPre = leadItem.querySelector('pre');

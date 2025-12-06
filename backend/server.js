@@ -33,7 +33,7 @@ app.post('/api/analyze-lead', async (req, res) => {
     }
 
     // Construct the prompt for the AI
-    const prompt = `You are an AI assistant for a contracting business. Your task is to analyze a project description, categorize it, summarize it, provide a rough cost estimate, and draft a professional email response to the client.
+    const prompt = `You are an AI assistant for a contracting business. Your task is to analyze a project description and provide a detailed breakdown.
 
 Project Description: "${projectDescription}"
 Client Name: "${clientName}"
@@ -42,6 +42,9 @@ Please provide your response in a JSON format with the following keys:
 - "summary": A concise summary of the project.
 - "category": A category for the project (e.g., "Kitchen Remodel", "Deck Construction", "Landscaping", "Plumbing Repair").
 - "costEstimate": A rough, non-binding, ballpark cost estimate for the project. This should be a string (e.g., "$5,000 - $8,000"). Preface it with "Ballpark Estimate:".
+- "materialList": An array of strings, listing potential materials needed.
+- "laborBreakdown": An array of strings, listing the major labor tasks.
+- "permitRequired": A string indicating if a permit is likely required ("Yes", "No", or "Possibly").
 - "draftEmail": A polite and professional email to the client. The email should:
     - Thank them for their inquiry.
     - Confirm their project description.
@@ -66,7 +69,15 @@ Please provide your response in a JSON format with the following keys:
             return res.status(500).json({ error: 'AI response was not in expected JSON format.' });
         }
 
-        const { summary: aiSummary, category: aiCategory, costEstimate: aiCostEstimate, draftEmail: aiDraftEmail } = aiOutput;
+        const { 
+            summary: aiSummary, 
+            category: aiCategory, 
+            costEstimate: aiCostEstimate, 
+            materialList: aiMaterialList,
+            laborBreakdown: aiLaborBreakdown,
+            permitRequired: aiPermitRequired,
+            draftEmail: aiDraftEmail 
+        } = aiOutput;
 
         res.json({
             id: Date.now(),
@@ -76,6 +87,9 @@ Please provide your response in a JSON format with the following keys:
             aiSummary,
             aiCategory,
             aiCostEstimate,
+            aiMaterialList,
+            aiLaborBreakdown,
+            aiPermitRequired,
             aiDraftEmail,
         });
 
