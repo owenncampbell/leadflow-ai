@@ -38,38 +38,55 @@ document.addEventListener('DOMContentLoaded', () => {
         leadItem.className = 'lead-item';
         leadItem.id = `lead-${lead._id}`;
         leadItem.innerHTML = `
-            <h3>
-                ${lead.clientName} - ${lead.aiCategory || 'N/A'}
-                <span class="lead-status status-${lead.status.toLowerCase()}">${lead.status}</span>
-            </h3>
-            <div class="lead-status-changer">
-                <label for="status-select-${lead._id}">Change Status:</label>
-                <select id="status-select-${lead._id}" data-lead-id="${lead._id}">
-                    <option value="New" ${lead.status === 'New' ? 'selected' : ''}>New</option>
-                    <option value="Contacted" ${lead.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
-                    <option value="Quoted" ${lead.status === 'Quoted' ? 'selected' : ''}>Quoted</option>
-                    <option value="Won" ${lead.status === 'Won' ? 'selected' : ''}>Won</option>
-                    <option value="Lost" ${lead.status === 'Lost' ? 'selected' : ''}>Lost</option>
-                </select>
+            <div class="lead-header">
+                <h3>
+                    ${lead.clientName} - ${lead.aiCategory || 'N/A'}
+                    <span class="lead-status status-${lead.status.toLowerCase()}">${lead.status}</span>
+                </h3>
+                <button class="toggle-details-btn" aria-expanded="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
             </div>
-            <p><strong>Email:</strong> ${lead.clientEmail}</p>
-            <p><strong>Original Request:</strong> ${lead.projectDescription}</p>
-            <p><strong>AI Summary:</strong> ${lead.aiSummary || 'N/A'}</p>
-            <p><strong>AI Cost Estimate:</strong> ${lead.aiCostEstimate || 'N/A'}</p>
-            <div><strong>Potential Materials:</strong><ul>${lead.aiMaterialList.map(item => `<li>${item}</li>`).join('')}</ul></div>
-            <div><strong>Labor Breakdown:</strong><ul>${lead.aiLaborBreakdown.map(item => `<li>${item}</li>`).join('')}</ul></div>
-            <p><strong>Permit Required:</strong> ${lead.aiPermitRequired || 'N/A'}</p>
-            <p><strong>AI Draft Email:</strong></p>
-            <pre>${lead.aiDraftEmail || 'N/A'}</pre>
-            <div class="lead-actions">
-                <button class="send-email">Send Email</button>
-                <button class="edit-email">Edit Email</button>
+            <div class="lead-details">
+                <div class="lead-status-changer">
+                    <label for="status-select-${lead._id}">Change Status:</label>
+                    <select id="status-select-${lead._id}" data-lead-id="${lead._id}">
+                        <option value="New" ${lead.status === 'New' ? 'selected' : ''}>New</option>
+                        <option value="Contacted" ${lead.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
+                        <option value="Quoted" ${lead.status === 'Quoted' ? 'selected' : ''}>Quoted</option>
+                        <option value="Won" ${lead.status === 'Won' ? 'selected' : ''}>Won</option>
+                        <option value="Lost" ${lead.status === 'Lost' ? 'selected' : ''}>Lost</option>
+                    </select>
+                </div>
+                <p><strong>Email:</strong> ${lead.clientEmail}</p>
+                <p><strong>Original Request:</strong> ${lead.projectDescription}</p>
+                <p><strong>AI Summary:</strong> ${lead.aiSummary || 'N/A'}</p>
+                <p><strong>AI Cost Estimate:</strong> ${lead.aiCostEstimate || 'N/A'}</p>
+                <div><strong>Potential Materials:</strong><ul>${lead.aiMaterialList.map(item => `<li>${item}</li>`).join('')}</ul></div>
+                <div><strong>Labor Breakdown:</strong><ul>${lead.aiLaborBreakdown.map(item => `<li>${item}</li>`).join('')}</ul></div>
+                <p><strong>Permit Required:</strong> ${lead.aiPermitRequired || 'N/A'}</p>
+                <p><strong>AI Draft Email:</strong></p>
+                <pre>${lead.aiDraftEmail || 'N/A'}</pre>
+                <div class="lead-actions">
+                    <button class="send-email">Send Email</button>
+                    <button class="edit-email">Edit Email</button>
+                </div>
             </div>
         `;
         leadsList.appendChild(leadItem); // Use appendChild
 
         // --- Add Event Listeners ---
 
+        // Toggle Details
+        const toggleButton = leadItem.querySelector('.toggle-details-btn');
+        toggleButton.addEventListener('click', () => {
+            leadItem.classList.toggle('collapsed');
+            const isExpanded = !leadItem.classList.contains('collapsed');
+            toggleButton.setAttribute('aria-expanded', isExpanded);
+        });
+        
         // Status Changer
         const statusSelect = leadItem.querySelector('.lead-status-changer select');
         statusSelect.addEventListener('change', async (e) => {

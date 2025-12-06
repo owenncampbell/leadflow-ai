@@ -141,19 +141,64 @@ form button:hover {
     box-shadow: var(--shadow-md);
 }
 
-.lead-item h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: var(--text-color);
+.lead-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+}
+
+.lead-item h3 {
+    margin: 0;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     font-size: 1.25rem;
     font-weight: 600;
 }
 
+.toggle-details-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.3s ease;
+}
+
+.toggle-details-btn:hover {
+    background-color: var(--bg-color);
+}
+
+.toggle-details-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.lead-details {
+    padding-top: 1.5rem;
+    display: grid;
+    gap: 1rem;
+    transition: grid-template-rows 0.3s ease-in-out;
+    grid-template-rows: 1fr;
+}
+
+.lead-item.collapsed .lead-details {
+    grid-template-rows: 0fr;
+    padding-top: 0;
+    overflow: hidden;
+}
+
+.lead-item.collapsed .toggle-details-btn svg {
+    transform: rotate(-90deg);
+}
+
+
 .lead-item p, .lead-item div {
-    margin-bottom: 1rem;
+    margin: 0;
     font-size: 0.95rem;
     color: var(--text-muted);
 }
@@ -258,7 +303,6 @@ form button:hover {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 1rem;
 }
 
 .lead-status-changer label {
