@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         lead.status = lead.status || 'New'; // Default status to 'New'
+        lead.aiMaterialList = lead.aiMaterialList || []; // Default to empty array
+        lead.aiLaborBreakdown = lead.aiLaborBreakdown || []; // Default to empty array
 
         const leadItem = document.createElement('div');
         leadItem.className = 'lead-item';
