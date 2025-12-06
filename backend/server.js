@@ -116,8 +116,9 @@ app.put('/api/leads/:id/status', async (req, res) => {
 });
 
 
-// --- Frontend Catch-all ---
-app.get('*', (req, res) => {
+// This middleware should be the last one.
+// It catches all other routes and sends the index.html file.
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
 
