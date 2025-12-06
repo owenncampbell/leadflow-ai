@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lead.aiLaborBreakdown = lead.aiLaborBreakdown || [];
 
         const leadItem = document.createElement('div');
-        leadItem.className = 'lead-item';
+        leadItem.className = 'lead-item collapsed'; // Add 'collapsed' class by default
         leadItem.id = `lead-${lead._id}`;
         leadItem.innerHTML = `
             <div class="lead-header">
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${lead.clientName} - ${lead.aiCategory || 'N/A'}
                     <span class="lead-status status-${lead.status.toLowerCase()}">${lead.status}</span>
                 </h3>
-                <button class="toggle-details-btn" aria-expanded="true">
+                <button class="toggle-details-btn" aria-expanded="false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
