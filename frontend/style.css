@@ -47,13 +47,27 @@ header p {
     color: var(--text-muted);
 }
 
-main {
+.main-container {
     padding: 2rem;
     max-width: 1200px;
     margin: 2rem auto;
     display: grid;
-    grid-template-columns: 1fr 2fr;
     gap: 2rem;
+}
+
+#auth-section {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+}
+
+.grid-layout {
+    grid-template-columns: 1fr 2fr;
+}
+
+@media (max-width: 900px) {
+    .grid-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
 section {
