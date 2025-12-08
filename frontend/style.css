@@ -59,7 +59,10 @@ header p {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 80vh; /* Adjusted for better vertical centering */
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 500px;
 }
 
 .auth-card {
