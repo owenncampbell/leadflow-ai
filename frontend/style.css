@@ -359,6 +359,22 @@ form button:hover {
     border: 1px solid #fca5a5;
 }
 
+#password-match-message {
+    font-size: 0.875rem;
+    margin-top: -0.75rem;
+    margin-bottom: 0.5rem;
+    height: 1rem;
+}
+
+#password-match-message.success {
+    color: var(--secondary-color);
+}
+
+#password-match-message.error {
+    color: var(--danger-color);
+}
+
+
 .lead-status {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;

@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.getElementById('main-content');
     const showRegisterLink = document.getElementById('show-register');
     const showLoginLink = document.getElementById('show-login');
+    const passwordInput = document.getElementById('register-password');
+    const confirmPasswordInput = document.getElementById('register-confirm-password');
+    const passwordMatchMessage = document.getElementById('password-match-message');
 
     // --- State Modifier ---
     function setState(newState) {
@@ -76,6 +79,19 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.style.display = 'none';
     });
 
+    function validatePasswordMatch() {
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            passwordMatchMessage.textContent = 'Passwords do not match';
+            passwordMatchMessage.className = 'error';
+        } else {
+            passwordMatchMessage.textContent = 'Passwords match';
+            passwordMatchMessage.className = 'success';
+        }
+    }
+
+    passwordInput.addEventListener('input', validatePasswordMatch);
+    confirmPasswordInput.addEventListener('input', validatePasswordMatch);
+    
     // --- Initial Load ---
     checkAuthStatus();
 
@@ -101,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmPassword = document.getElementById('register-confirm-password').value;
 
         if (password !== confirmPassword) {
-            alert('Passwords do not match.');
             return;
         }
 
