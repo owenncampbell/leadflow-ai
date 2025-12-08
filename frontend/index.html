@@ -10,9 +10,33 @@
     <header>
         <h1>LeadFlow AI</h1>
         <p>AI-powered lead management for contracting businesses.</p>
+        <button id="logout-button" style="display: none;">Logout</button>
     </header>
 
-    <main>
+    <main id="auth-section">
+        <section id="login">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="login-email">Email:</label>
+                <input type="email" id="login-email" required>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" required>
+                <button type="submit">Login</button>
+            </form>
+        </section>
+        <section id="register">
+            <h2>Register</h2>
+            <form id="register-form">
+                <label for="register-email">Email:</label>
+                <input type="email" id="register-email" required>
+                <label for="register-password">Password:</label>
+                <input type="password" id="register-password" required>
+                <button type="submit">Register</button>
+            </form>
+        </section>
+    </main>
+
+    <main id="main-content" style="display: none;">
         <section id="lead-input">
             <h2>Submit a New Lead</h2>
             <form id="lead-form">
@@ -31,7 +55,6 @@
             <h2>Your Leads</h2>
             <div id="leads-list">
                 <!-- Leads will be dynamically loaded here -->
-                <p>No leads yet. Submit one using the form above!</p>
             </div>
         </section>
     </main>
@@ -40,6 +63,10 @@
         <p>&copy; 2023 LeadFlow AI</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
