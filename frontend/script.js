@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const leadsList = document.getElementById('leads-list');
     const authSection = document.getElementById('auth-section');
     const mainContent = document.getElementById('main-content');
+    const showRegisterLink = document.getElementById('show-register');
+    const showLoginLink = document.getElementById('show-login');
 
     // --- State Modifier ---
     function setState(newState) {
@@ -62,6 +64,18 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutButton.addEventListener('click', handleLogout);
     leadForm.addEventListener('submit', handleLeadFormSubmit);
     
+    showRegisterLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'grid';
+    });
+
+    showLoginLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginForm.style.display = 'grid';
+        registerForm.style.display = 'none';
+    });
+
     // --- Initial Load ---
     checkAuthStatus();
 
