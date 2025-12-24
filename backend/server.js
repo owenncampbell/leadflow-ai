@@ -15,9 +15,20 @@ connectDB();
 const authRoutes = require('./routes/auth');
 const leadRoutes = require('./routes/leads');
 
+const allowedOrigins = (process.env.CORS_ORIGINS || '')
+    .split(',')
+    .map(origin => origin.trim())
+    .filter(Boolean);
+
 const corsOptions = {
-    origin: 'https://shiftloopleads.netlify.app',
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+    },
 };
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
