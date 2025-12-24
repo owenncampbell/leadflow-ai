@@ -7,6 +7,7 @@ const {
     deleteLead,
     updateLeadEmail,
     generateProposal,
+    addLeadNote,
 } = require('../controllers/leadController');
 const auth = require('../middleware/auth');
 const rateLimit = require('express-rate-limit');
@@ -25,5 +26,6 @@ router.put('/:id/status', auth, updateLeadStatus);
 router.delete('/:id', auth, deleteLead);
 router.put('/:id/email', auth, updateLeadEmail);
 router.get('/:id/proposal', auth, generateProposal);
+router.post('/:id/notes', auth, addLeadNote);
 
 module.exports = router;

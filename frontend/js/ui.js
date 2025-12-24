@@ -1,10 +1,11 @@
-import { updateLeadStatus, deleteLead, updateLeadEmail, generateProposal } from './api.js';
+import { updateLeadStatus, deleteLead, updateLeadEmail, generateProposal, addLeadNote } from './api.js';
 
 export function addLeadToDashboard(lead) {
     // Defaults for safety
     lead.status = lead.status || 'New';
     lead.aiMaterialList = lead.aiMaterialList || [];
     lead.aiLaborBreakdown = lead.aiLaborBreakdown || [];
+    lead.notes = lead.notes || [];
 
     const leadItem = document.createElement('div');
     leadItem.className = 'lead-item collapsed';
@@ -85,6 +86,59 @@ export function addLeadToDashboard(lead) {
     emailDraftLabel.appendChild(createElement('strong', '', 'AI Draft Email:'));
     const emailPre = createElement('pre', '', lead.aiDraftEmail || 'N/A');
 
+    // Notes
+    const notesSection = createElement('div', 'lead-notes');
+    const notesHeader = createElement('div', 'lead-notes-header');
+    notesHeader.appendChild(createElement('strong', '', 'Notes'));
+    const notesList = createElement('ul', 'lead-notes-list');
+    const notesPlaceholder = createElement('p', 'lead-notes-empty', 'No notes yet.');
+
+    const renderNotes = (notesArr) => {
+        notesList.innerHTML = '';
+        if (!notesArr || notesArr.length === 0) {
+            notesPlaceholder.style.display = 'block';
+            return;
+        }
+        notesPlaceholder.style.display = 'none';
+        notesArr.forEach(note => {
+            const li = createElement('li');
+            const date = note.createdAt ? new Date(note.createdAt).toLocaleDateString() : '';
+            li.innerHTML = `<span class="note-text">${note.text}</span>${date ? `<span class="note-date">${date}</span>` : ''}`;
+            notesList.appendChild(li);
+        });
+    };
+
+    renderNotes(lead.notes);
+
+    const noteForm = createElement('form', 'lead-note-form');
+    noteForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(noteForm);
+        const noteText = formData.get('noteText')?.toString().trim();
+        if (!noteText) return;
+
+        try {
+            const { notes } = await addLeadNote(lead._id, noteText);
+            lead.notes = notes;
+            renderNotes(lead.notes);
+            noteForm.reset();
+        } catch (err) {
+            console.error('Failed to add note:', err);
+            alert(err.message);
+        }
+    });
+
+    const noteInput = createElement('input');
+    noteInput.type = 'text';
+    noteInput.name = 'noteText';
+    noteInput.placeholder = 'Add a follow-up note...';
+
+    const noteButton = createElement('button', 'add-note-btn', 'Add Note');
+    noteButton.type = 'submit';
+
+    noteForm.append(noteInput, noteButton);
+    notesSection.append(notesHeader, notesList, notesPlaceholder, noteForm);
+
     // --- Lead Actions ---
     const leadActions = createElement('div', 'lead-actions');
     const proposalButton = createElement('button', 'generate-proposal', 'Generate Proposal');
@@ -104,6 +158,7 @@ export function addLeadToDashboard(lead) {
         permitP,
         emailDraftLabel,
         emailPre,
+        notesSection,
         leadActions
     );
     

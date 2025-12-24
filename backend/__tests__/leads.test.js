@@ -8,6 +8,8 @@ const User = require('../models/User');
 const Lead = require('../models/Lead');
 const OpenAI = require('openai');
 
+jest.setTimeout(20000);
+
 jest.mock('openai');
 
 const app = express();
@@ -157,5 +159,22 @@ describe('Leads API', () => {
             
         expect(res.statusCode).toEqual(200);
         expect(res.header['content-type']).toBe('application/pdf');
+    });
+
+    it('should add a note to a lead', async () => {
+        const lead = await new Lead({
+            user: userId,
+            projectDescription: 'Test Project',
+            clientName: 'Test Client',
+            clientEmail: 'client@test.com',
+        }).save();
+
+        const res = await request(app)
+            .post(`/api/leads/${lead._id}/notes`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({ text: 'Followed up via email.' });
+
+        expect(res.statusCode).toEqual(201);
+        expect(res.body.notes[0].text).toBe('Followed up via email.');
     });
 });

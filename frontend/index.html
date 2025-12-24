@@ -60,6 +60,23 @@
 
         <section id="leads-dashboard">
             <h2>Your Leads</h2>
+            <div class="lead-controls">
+                <div class="control">
+                    <label for="status-filter">Status</label>
+                    <select id="status-filter">
+                        <option value="all">All</option>
+                        <option value="New">New</option>
+                        <option value="Contacted">Contacted</option>
+                        <option value="Quoted">Quoted</option>
+                        <option value="Won">Won</option>
+                        <option value="Lost">Lost</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <label for="lead-search">Search</label>
+                    <input type="text" id="lead-search" placeholder="Search by client, email, or description">
+                </div>
+            </div>
             <div id="leads-list">
                 <!-- Leads will be dynamically loaded here -->
             </div>

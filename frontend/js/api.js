@@ -94,3 +94,15 @@ export async function generateProposal(leadId) {
     if (!response.ok) throw new Error('Could not generate proposal.');
     return await response.blob();
 }
+
+export async function addLeadNote(leadId, text) {
+    const response = await fetchWithAuth(`${API_URL}/leads/${leadId}/notes`, {
+        method: 'POST',
+        body: JSON.stringify({ text }),
+    });
+    if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to add note.');
+    }
+    return await response.json();
+}

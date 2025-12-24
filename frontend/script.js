@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         leads: [],
         error: null,
         loading: true,
+        filterStatus: 'all',
+        searchTerm: '',
     };
 
     // --- DOM Elements ---
@@ -18,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutButton = document.getElementById('logout-button');
     const leadForm = document.getElementById('lead-form');
     const leadsList = document.getElementById('leads-list');
+    const statusFilter = document.getElementById('status-filter');
+    const leadSearch = document.getElementById('lead-search');
     const authSection = document.getElementById('auth-section');
     const mainContent = document.getElementById('main-content');
     const showRegisterLink = document.getElementById('show-register');
@@ -34,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Render Function ---
     function render() {
-        const { user, leads, loading } = state;
+        const { user, leads, loading, filterStatus, searchTerm } = state;
 
         // Render auth state
         if (user) {
@@ -54,10 +58,24 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (leads.length === 0) {
-            leadsList.innerHTML = '<p>No leads yet. Submit one using the form!</p>';
+        const search = searchTerm.toLowerCase();
+        const filteredLeads = leads.filter(lead => {
+            const matchesStatus = filterStatus === 'all' || lead.status === filterStatus;
+            const haystack = [
+                lead.clientName,
+                lead.clientEmail,
+                lead.projectDescription,
+                lead.aiCategory,
+                lead.aiSummary,
+            ].join(' ').toLowerCase();
+            const matchesSearch = !search || haystack.includes(search);
+            return matchesStatus && matchesSearch;
+        });
+
+        if (filteredLeads.length === 0) {
+            leadsList.innerHTML = '<p>No leads match your filters. Adjust filters or add a new lead.</p>';
         } else {
-            leads.forEach(lead => addLeadToDashboard(lead));
+            filteredLeads.forEach(lead => addLeadToDashboard(lead));
         }
     }
 
@@ -66,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm.addEventListener('submit', handleRegister);
     logoutButton.addEventListener('click', handleLogout);
     leadForm.addEventListener('submit', handleLeadFormSubmit);
+    statusFilter.addEventListener('change', (e) => setState({ filterStatus: e.target.value }));
+    leadSearch.addEventListener('input', (e) => setState({ searchTerm: e.target.value }));
     
     showRegisterLink.addEventListener('click', (e) => {
         e.preventDefault();

@@ -13,6 +13,13 @@ const leadSchema = new mongoose.Schema({
     aiPermitRequired: String,
     aiDraftEmail: String,
     status: { type: String, default: 'New' },
+    notes: {
+        type: [{
+            text: { type: String, required: true },
+            createdAt: { type: Date, default: Date.now }
+        }],
+        default: []
+    },
     createdAt: { type: Date, default: Date.now }
 });
 

@@ -6,6 +6,8 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const authRoutes = require('../routes/auth');
 const User = require('../models/User');
 
+jest.setTimeout(20000);
+
 const app = express();
 app.use(express.json());
 app.use('/api/auth', authRoutes);

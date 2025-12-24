@@ -76,6 +76,29 @@ exports.updateLeadEmail = asyncHandler(async (req, res) => {
     res.json(updatedLead);
 });
 
+exports.addLeadNote = asyncHandler(async (req, res) => {
+    const { text } = req.body;
+    const { id } = req.params;
+
+    if (!text || typeof text !== 'string') {
+        res.status(400);
+        throw new Error('Note text is required.');
+    }
+
+    const lead = await Lead.findOne({ _id: id, user: req.user.id });
+
+    if (!lead) {
+        res.status(404);
+        throw new Error('Lead not found or you do not have permission to edit it.');
+    }
+
+    lead.notes = lead.notes || [];
+    lead.notes.unshift({ text: text.trim() });
+    await lead.save();
+
+    res.status(201).json({ notes: lead.notes });
+});
+
 exports.generateProposal = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const lead = await Lead.findOne({ _id: id, user: req.user.id });
