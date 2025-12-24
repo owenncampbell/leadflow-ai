@@ -111,10 +111,28 @@ export function addLeadToDashboard(lead) {
     document.getElementById('leads-list').appendChild(leadItem);
 
     // --- Add Event Listeners ---
-    toggleButton.addEventListener('click', () => {
+    const toggleDetails = () => {
         leadItem.classList.toggle('collapsed');
         const isExpanded = !leadItem.classList.contains('collapsed');
         toggleButton.setAttribute('aria-expanded', isExpanded);
+    };
+
+    toggleButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleDetails();
+    });
+
+    // Allow clicking the header (not just the arrow) to toggle
+    leadHeader.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        toggleDetails();
+    });
+
+    // When collapsed, clicking anywhere on the card (except controls) expands it
+    leadItem.addEventListener('click', (e) => {
+        if (!leadItem.classList.contains('collapsed')) return;
+        if (e.target.closest('button, select, option, input, textarea, a')) return;
+        toggleDetails();
     });
 
     statusSelect.addEventListener('change', async (e) => {
