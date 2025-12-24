@@ -165,7 +165,17 @@ export function addLeadToDashboard(lead) {
         }
     });
 
-    sendButton.addEventListener('click', () => {
+    sendButton.addEventListener('click', async () => {
+        try {
+            const updatedLead = await updateLeadStatus(lead._id, 'Contacted');
+            const leadStatusSpan = leadItem.querySelector('.lead-status');
+            leadStatusSpan.textContent = updatedLead.status;
+            leadStatusSpan.className = `lead-status status-${updatedLead.status.toLowerCase()}`;
+            statusSelect.value = updatedLead.status;
+        } catch (err) {
+            // Keep this non-blocking for now
+            console.error('Failed to update status to Contacted:', err);
+        }
         alert(`Simulating sending email to ${lead.clientName}.`);
     });
 
