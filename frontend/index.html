@@ -76,6 +76,16 @@
                     <label for="lead-search">Search</label>
                     <input type="text" id="lead-search" placeholder="Search by client, email, or description">
                 </div>
+                <div class="control">
+                    <label for="reminder-filter">Reminders</label>
+                    <select id="reminder-filter">
+                        <option value="all">All</option>
+                        <option value="today">Due Today</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="none">No Reminder</option>
+                    </select>
+                </div>
             </div>
             <div id="leads-list">
                 <!-- Leads will be dynamically loaded here -->

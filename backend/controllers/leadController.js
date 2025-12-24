@@ -99,6 +99,35 @@ exports.addLeadNote = asyncHandler(async (req, res) => {
     res.status(201).json({ notes: lead.notes });
 });
 
+exports.setLeadReminder = asyncHandler(async (req, res) => {
+    const { date, note } = req.body;
+    const { id } = req.params;
+
+    const lead = await Lead.findOne({ _id: id, user: req.user.id });
+    if (!lead) {
+        res.status(404);
+        throw new Error('Lead not found or you do not have permission to edit it.');
+    }
+
+    let reminderDate = null;
+    if (date) {
+        const parsed = new Date(date);
+        if (isNaN(parsed.getTime())) {
+            res.status(400);
+            throw new Error('Invalid reminder date.');
+        }
+        reminderDate = parsed;
+    }
+
+    lead.reminder = {
+        date: reminderDate,
+        note: typeof note === 'string' ? note.trim() : '',
+    };
+    await lead.save();
+
+    res.json({ reminder: lead.reminder });
+});
+
 exports.generateProposal = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const lead = await Lead.findOne({ _id: id, user: req.user.id });

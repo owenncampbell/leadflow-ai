@@ -276,6 +276,34 @@ form button:hover {
     font-weight: 600;
 }
 
+.reminder-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.reminder-badge.overdue {
+    background: var(--danger-color);
+}
+
+.reminder-badge.today {
+    background: var(--warning-color);
+    color: var(--text-color);
+}
+
+.reminder-badge.upcoming {
+    background: var(--primary-color);
+}
+
+.reminder-badge.none {
+    background: #9ca3af;
+}
+
 .toggle-details-btn {
     background: none;
     border: none;
@@ -355,6 +383,68 @@ form button:hover {
     border-radius: 0.6rem;
     padding: 1rem;
     background: #f9fafb;
+}
+
+.lead-reminder {
+    border: 1px dashed var(--border-color);
+    border-radius: 0.6rem;
+    padding: 1rem;
+    background: #fdfdfd;
+}
+
+.lead-reminder-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    align-items: end;
+    margin-top: 0.75rem;
+}
+
+.lead-reminder-form input[type="date"],
+.lead-reminder-form input[type="text"] {
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background: #fff;
+}
+
+.lead-reminder-form input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgb(79 70 229 / 0.2);
+}
+
+.set-reminder-btn,
+.clear-reminder-btn {
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.set-reminder-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: #fff;
+}
+
+.clear-reminder-btn {
+    background: #e5e7eb;
+    color: var(--text-color);
+}
+
+.set-reminder-btn:hover,
+.clear-reminder-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.set-reminder-btn:active,
+.clear-reminder-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
 }
 
 .lead-notes-header {

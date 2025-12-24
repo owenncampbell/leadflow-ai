@@ -1,4 +1,4 @@
-import { updateLeadStatus, deleteLead, updateLeadEmail, generateProposal, addLeadNote } from './api.js';
+import { updateLeadStatus, deleteLead, updateLeadEmail, generateProposal, addLeadNote, setLeadReminder } from './api.js';
 
 export function addLeadToDashboard(lead) {
     // Defaults for safety
@@ -6,6 +6,7 @@ export function addLeadToDashboard(lead) {
     lead.aiMaterialList = lead.aiMaterialList || [];
     lead.aiLaborBreakdown = lead.aiLaborBreakdown || [];
     lead.notes = lead.notes || [];
+    lead.reminder = lead.reminder || { date: null, note: '' };
 
     const leadItem = document.createElement('div');
     leadItem.className = 'lead-item collapsed';
@@ -23,7 +24,35 @@ export function addLeadToDashboard(lead) {
     const leadHeader = createElement('div', 'lead-header');
     const h3 = createElement('h3', '', `${lead.clientName} - ${lead.aiCategory || 'N/A'}`);
     const statusSpan = createElement('span', `lead-status status-${lead.status.toLowerCase()}`, lead.status);
+
+    const reminderBadge = createElement('span', 'reminder-badge none', 'No reminder');
+    const setReminderBadge = () => {
+        if (!lead.reminder || !lead.reminder.date) {
+            reminderBadge.textContent = 'No reminder';
+            reminderBadge.className = 'reminder-badge none';
+            return;
+        }
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const date = new Date(lead.reminder.date);
+        date.setHours(0,0,0,0);
+        const diffDays = Math.floor((date - today) / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0) {
+            reminderBadge.textContent = `Overdue • ${date.toLocaleDateString()}`;
+            reminderBadge.className = 'reminder-badge overdue';
+        } else if (diffDays === 0) {
+            reminderBadge.textContent = `Due today`;
+            reminderBadge.className = 'reminder-badge today';
+        } else {
+            reminderBadge.textContent = `Upcoming • ${date.toLocaleDateString()}`;
+            reminderBadge.className = 'reminder-badge upcoming';
+        }
+    };
+    setReminderBadge();
+
     h3.appendChild(statusSpan);
+    h3.appendChild(reminderBadge);
 
     const toggleButton = createElement('button', 'toggle-details-btn');
     toggleButton.setAttribute('aria-expanded', 'false');
@@ -85,6 +114,62 @@ export function addLeadToDashboard(lead) {
     const emailDraftLabel = createElement('p');
     emailDraftLabel.appendChild(createElement('strong', '', 'AI Draft Email:'));
     const emailPre = createElement('pre', '', lead.aiDraftEmail || 'N/A');
+
+    // Reminder
+    const reminderSection = createElement('div', 'lead-reminder');
+    const reminderLabel = createElement('p');
+    reminderLabel.appendChild(createElement('strong', '', 'Reminder'));
+
+    const reminderForm = createElement('form', 'lead-reminder-form');
+    reminderForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(reminderForm);
+        const date = formData.get('reminderDate');
+        const note = formData.get('reminderNote')?.toString().trim() || '';
+        try {
+            const { reminder } = await setLeadReminder(lead._id, { date, note });
+            lead.reminder = reminder;
+            setReminderBadge();
+        } catch (err) {
+            console.error('Failed to set reminder:', err);
+            alert(err.message);
+        }
+    });
+
+    const reminderDateInput = createElement('input');
+    reminderDateInput.type = 'date';
+    reminderDateInput.name = 'reminderDate';
+    if (lead.reminder && lead.reminder.date) {
+        const d = new Date(lead.reminder.date);
+        reminderDateInput.value = d.toISOString().slice(0,10);
+    }
+
+    const reminderNoteInput = createElement('input');
+    reminderNoteInput.type = 'text';
+    reminderNoteInput.name = 'reminderNote';
+    reminderNoteInput.placeholder = 'Optional note';
+    reminderNoteInput.value = lead.reminder?.note || '';
+
+    const reminderButton = createElement('button', 'set-reminder-btn', 'Save Reminder');
+    reminderButton.type = 'submit';
+
+    const clearReminder = createElement('button', 'clear-reminder-btn', 'Clear');
+    clearReminder.type = 'button';
+    clearReminder.addEventListener('click', async () => {
+        try {
+            const { reminder } = await setLeadReminder(lead._id, { date: null, note: '' });
+            lead.reminder = reminder;
+            setReminderBadge();
+            reminderDateInput.value = '';
+            reminderNoteInput.value = '';
+        } catch (err) {
+            console.error('Failed to clear reminder:', err);
+            alert(err.message);
+        }
+    });
+
+    reminderForm.append(reminderDateInput, reminderNoteInput, reminderButton, clearReminder);
+    reminderSection.append(reminderLabel, reminderForm);
 
     // Notes
     const notesSection = createElement('div', 'lead-notes');

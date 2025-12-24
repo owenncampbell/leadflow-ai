@@ -106,3 +106,15 @@ export async function addLeadNote(leadId, text) {
     }
     return await response.json();
 }
+
+export async function setLeadReminder(leadId, { date, note }) {
+    const response = await fetchWithAuth(`${API_URL}/leads/${leadId}/reminder`, {
+        method: 'PUT',
+        body: JSON.stringify({ date, note }),
+    });
+    if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to set reminder.');
+    }
+    return await response.json();
+}

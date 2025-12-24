@@ -177,4 +177,22 @@ describe('Leads API', () => {
         expect(res.statusCode).toEqual(201);
         expect(res.body.notes[0].text).toBe('Followed up via email.');
     });
+
+    it('should set a reminder on a lead', async () => {
+        const lead = await new Lead({
+            user: userId,
+            projectDescription: 'Test Project',
+            clientName: 'Test Client',
+            clientEmail: 'client@test.com',
+        }).save();
+
+        const res = await request(app)
+            .put(`/api/leads/${lead._id}/reminder`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({ date: '2025-01-01', note: 'Call back' });
+
+        expect(res.statusCode).toEqual(200);
+        expect(new Date(res.body.reminder.date).toISOString().startsWith('2025-01-01')).toBe(true);
+        expect(res.body.reminder.note).toBe('Call back');
+    });
 });

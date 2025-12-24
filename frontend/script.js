@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loading: true,
         filterStatus: 'all',
         searchTerm: '',
+        reminderFilter: 'all',
     };
 
     // --- DOM Elements ---
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const leadsList = document.getElementById('leads-list');
     const statusFilter = document.getElementById('status-filter');
     const leadSearch = document.getElementById('lead-search');
+    const reminderFilter = document.getElementById('reminder-filter');
     const authSection = document.getElementById('auth-section');
     const mainContent = document.getElementById('main-content');
     const showRegisterLink = document.getElementById('show-register');
@@ -38,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Render Function ---
     function render() {
-        const { user, leads, loading, filterStatus, searchTerm } = state;
+        const { user, leads, loading, filterStatus, searchTerm, reminderFilter: reminderFilterValue } = state;
 
         // Render auth state
         if (user) {
@@ -59,6 +61,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const search = searchTerm.toLowerCase();
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        const isReminderMatch = (lead) => {
+            if (!lead.reminder || !lead.reminder.date) return reminderFilterValue === 'none' || reminderFilterValue === 'all';
+            const reminderDate = new Date(lead.reminder.date);
+            reminderDate.setHours(0,0,0,0);
+            const diffDays = Math.floor((reminderDate - today) / (1000 * 60 * 60 * 24));
+
+            switch (reminderFilterValue) {
+                case 'today':
+                    return diffDays === 0;
+                case 'overdue':
+                    return diffDays < 0;
+                case 'upcoming':
+                    return diffDays > 0;
+                case 'none':
+                    return false;
+                default:
+                    return true;
+            }
+        };
+
         const filteredLeads = leads.filter(lead => {
             const matchesStatus = filterStatus === 'all' || lead.status === filterStatus;
             const haystack = [
@@ -69,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 lead.aiSummary,
             ].join(' ').toLowerCase();
             const matchesSearch = !search || haystack.includes(search);
-            return matchesStatus && matchesSearch;
+            const matchesReminder = isReminderMatch(lead);
+            return matchesStatus && matchesSearch && matchesReminder;
         });
 
         if (filteredLeads.length === 0) {
@@ -86,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     leadForm.addEventListener('submit', handleLeadFormSubmit);
     statusFilter.addEventListener('change', (e) => setState({ filterStatus: e.target.value }));
     leadSearch.addEventListener('input', (e) => setState({ searchTerm: e.target.value }));
+    reminderFilter.addEventListener('change', (e) => setState({ reminderFilter: e.target.value }));
     
     showRegisterLink.addEventListener('click', (e) => {
         e.preventDefault();
