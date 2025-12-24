@@ -34,6 +34,7 @@ header {
     text-align: center;
     border-bottom: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
+    position: relative;
 }
 
 header h1 {
@@ -45,6 +46,32 @@ header h1 {
 header p {
     margin-top: 0.25rem;
     color: var(--text-muted);
+}
+
+#logout-button {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    background: linear-gradient(135deg, var(--text-muted), var(--text-color));
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+#logout-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+#logout-button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
 }
 
 .main-container {
@@ -299,12 +326,19 @@ form button:hover {
 }
 
 .lead-actions button {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.15rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
     cursor: pointer;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .lead-actions button.generate-proposal {
@@ -313,6 +347,8 @@ form button:hover {
 }
 .lead-actions button.generate-proposal:hover {
     background-color: var(--primary-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 .lead-actions button.send-email {
@@ -321,6 +357,8 @@ form button:hover {
 }
 .lead-actions button.send-email:hover {
     background-color: var(--secondary-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 .lead-actions button.edit-email {
@@ -329,6 +367,8 @@ form button:hover {
 }
 .lead-actions button.edit-email:hover {
     background-color: #d97706; /* A darker yellow */
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 .lead-actions button.delete-lead {
@@ -337,6 +377,18 @@ form button:hover {
 }
 .lead-actions button.delete-lead:hover {
     background-color: var(--danger-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.lead-actions button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.lead-actions button:focus-visible {
+    outline: 2px solid rgba(79, 70, 229, 0.35);
+    outline-offset: 2px;
 }
 
 
