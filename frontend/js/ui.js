@@ -1,3 +1,5 @@
+import { updateLeadStatus, deleteLead, updateLeadEmail, generateProposal } from './api.js';
+
 export function addLeadToDashboard(lead) {
     // Defaults for safety
     lead.status = lead.status || 'New';

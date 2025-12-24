@@ -1,3 +1,5 @@
+import { getToken, logoutUser } from './auth.js';
+
 export async function fetchWithAuth(url, options = {}) {
     const token = getToken();
     const headers = {
@@ -11,7 +13,7 @@ export async function fetchWithAuth(url, options = {}) {
     const response = await fetch(url, { ...options, headers });
 
     if (response.status === 401) {
-        handleLogout();
+        logoutUser();
         throw new Error('Session expired. Please log in again.');
     }
     return response;
